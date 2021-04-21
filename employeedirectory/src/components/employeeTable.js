@@ -1,16 +1,62 @@
-import React from "react";
+import React, { Component } from "react";
+import API from "../utils/API";
+import EmployeeDetails from "./EmployeeDetails";
 
-function Card(props) {
-    return (
-        <div ClassName="card">
-            <div><img alt={props.last} src={props.image}></img></div>
-            <h3>Name: {props.name}</h3>
-            <h3>Age: {props.age}</h3>
-            <h3>Phone: {props.phone}</h3>
-            <h3>Email: {props.email}</h3>
-            </div>
+class EmployeeTable extends Component {
+    state = {
+        result: [],
+        search: "",
+        filterResults: []
+    };
 
-    );
-}
 
-export default Card;
+    componentDidMount() {
+        this.searchEmployees();
+    };
+
+    searchEmployees = () => {
+        API.search()
+            .then(res => this.setState({ result: res.data.result, filteredResults: res.data.results}))
+            .catch(err => console.log(err));
+    };
+
+    handleFormSearch = event => {
+        event.preventDefault();
+        const value = event.target.value;
+        const filterEmployee = this.state.results.filter(
+            employee => {
+                let userValue = Object.values(employee).join("").toLowerCase();
+                return userValue.indexOf(value.toLowerCase()) !== -1;
+            }
+        );
+        this.setState({ filteredResults: filterEmployee })
+        };
+
+
+        render() {
+            return (
+                <div>
+                    {this.state.result !== undefined ? (
+                        this.state.filteredResults.map((user) => {
+
+                            return (
+
+                                <EmployeeDetails
+                                    firstName={user.name.first}
+                                    lastName={user.name.ast}
+                                    Age={user.age}
+                                    Email={user.email}
+
+                                />
+                            )
+                        })
+                    ) :
+                        (
+                            <h3>No Results to Display</h3>
+                        )}
+                </div>
+            );
+        }
+    }
+
+    export default EmployeeTable;
