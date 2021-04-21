@@ -1,12 +1,12 @@
 import React, { Component } from "react";
 import API from "../utils/API";
 import EmployeeDetails from "./EmployeeDetails";
-
+import Search from "./Search"
 class EmployeeTable extends Component {
     state = {
-        result: [],
         search: "",
-        filterResults: []
+        result: [],
+        filteredResults: []
     };
 
 
@@ -36,6 +36,8 @@ class EmployeeTable extends Component {
         render() {
             return (
                 <div>
+                    <Search
+                    handleFormSearch={this.handleFormSearch}/>
                     {this.state.result !== undefined ? (
                         this.state.filteredResults.map((user) => {
 
